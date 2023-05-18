@@ -1,25 +1,32 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import { useState } from "react";
+import NewPost from "./components/NewPost/NewPost";
+import PostsList from "./components/PostsList/PostsList";
+import Post from "./models/post";
+import Modal from "./components/UI/Modal/Modal";
+import MainHeader from "./components/UI/MainHeader/MainHeader";
 
 function App() {
+  const [posts, setPosts] = useState<Post[]>([]);
+  const [showModal, setShowModal] = useState<boolean>(false);
+
+  const addPost = (post: Post) => {
+    setPosts((oldPosts) => [post, ...oldPosts]);
+  };
+
+  const closeModal = () => setShowModal(false);
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
+    <>
+      <header>
+        <MainHeader openModal={() => setShowModal(true)} />
       </header>
-    </div>
+      <main>
+        <Modal close={closeModal} show={showModal}>
+          <NewPost onAddPost={addPost} closeModal={closeModal} />
+        </Modal>
+
+        <PostsList posts={posts} />
+      </main>
+    </>
   );
 }
 
